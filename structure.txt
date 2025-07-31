@@ -1,0 +1,246 @@
+class <Position>: @def_train
+    |Attribute|:
+        track  # <Track>
+        line  # <Line>
+        abs_position_track  # <float>
+        abs_position_line  # <float>
+
+    |Method|:
+        __init__
+        coord_line2track
+        update_position_line
+        __str__
+
+class <Train>: @def_train
+    |Attribute|:
+        acceleration_positive  # <float>
+        acceleration_negative  # <float>
+        acc_idle  # <float>
+        acceleration_braking  # <float>
+        urgent_brake  # <float>
+        speed_max  #<float>
+        name  # <string>
+        length  # <float>
+        head  # <Position>
+        tail  # <Position>
+        line  # <Line>
+        direction  # <Node>
+        end_ahead  # <Node>
+        speed  # <float>
+        target_speed  # <float>
+        train_pre  # <Train>
+        train_next  # <Train>
+        node_behind  # <Node>
+        state  # <dictionary>
+        stopping_time  # <float>
+        dummy  # <Dummy>
+        distance_covered  # <float>
+        DD  # list <float>
+        VV  # list <float>
+        TV  # list <float>
+        PP  # list <float>
+
+    |Method|:
+        __init__
+        reset_line_direction
+        position_repere_line
+        find_tail
+        find_node_behind
+        find_tracks
+        update_train
+        run
+        idle  'to be considered'
+        brake
+        stop
+        demande_leaving
+        record_train
+        print_train
+        __str__
+        __eq__  'to be created'
+        __ne__  'to be created'
+
+class <Measure>: @def_measure
+    |Attribute|:
+        name  # <string>
+        train  # <Train>
+        position  # <Position>
+        speed  # <float>
+
+    |Method|:
+        __init__
+        remeasure
+        measure_data  'to be created'
+
+class <Dummy>: @def_dummy
+    |Attribute|:
+        name  # <string>
+        measure  # <measure>
+        train  # <Train>
+        line  # <Line>
+        position  # <Position>
+        measured_tail  # <Position>
+        speed  # <float>
+        stopping_time  # <float>
+        state  # <string>
+        at_station  # <bool>
+        dis_before_stop  # <float>
+        dis_2_change  # <float>
+        next_speed  # <float>
+        D2V  # list <float>
+        NVC  # list <float>
+
+    |Method|:
+        __init__
+        state_set
+        command
+        update_dummy
+        dis_2_end_cal
+        dis_before_stop_cal
+        target_speed_set
+        dis_2_change_cal
+        find_dummy_tail
+        record_dummy
+        print_dummy
+        __str__  'to be created'
+
+class <Node>: @def_line
+    |Attribute|:
+        name  # <string>
+        signal  # <bool>
+        list_tracks_node  # list <Track>
+
+    |Method|:
+        __init__
+        signal_pass
+        signal_stop
+        __str__  'to be created'
+
+def signals2pass(list <Node>)
+
+def signals2stop(list <Node>)
+
+class <Track>: @def_line
+    |Attribute|:
+        name  # <string>
+        tracklength  # <float>
+        line  # <Line>
+        node_origin  # <Node>
+        node_end  # <Node>
+        track_pre  # <Track> or None
+        track_next  # <Track> or None
+        limit_speed  # <float>
+        abs_direction  # list <Node>
+        list_trains_track  # list <Train>
+
+    |Method|:
+        __init__
+        switch_direction
+        update_track
+        print_track
+        __str__
+        __eq__
+        __ne__
+
+class <Line>: @def_line
+    |Attribute|:
+        name  # <string>
+        first  # <Track>
+        node_origin_line  # <Node>
+        node_end_line  # <Node>
+        tracklength_line  # <float>
+        iscircle  # <bool>
+        list_trains_line  # list <Train>
+        coor_limit_speed  # list <float>
+        limit_speed_line  # list <float>
+        list_balises  # list <Balise>
+
+    |Method|:
+        __init__
+        check_first
+        find_real_first
+        check_circle
+        update_line
+        set_limit_speed_line
+        position_on_line(<Position>)
+        coor_track2line(<Position>)
+        show_limit_speed_info
+        print_line
+        __eq__
+        __ne__
+        __str__
+
+class <Joint>: @def_line
+class <Junction(Joint)>: @def_line
+class <Crossing(Joint)>: @def_line
+
+class <Station>: @def_station
+    |Attribute|:
+        name  # <string>
+        entry  # <Node>
+        exit  # <Node>
+        balise_ap  # <Balise>
+        balise_en  # <Balise>
+        balise_nn  # <Balise>
+        sign_ap  # <Node>
+        state  # <string>
+        stopping_time  # <float>
+        passing_train  # <Train> or None
+        comming_train  # <Train> or None
+        transit  # <dictionary>
+        waiting_train  # <bool>
+
+    |Method|:
+        __init__
+        ap(time, dt)
+        en(time, dt)
+        st(time, dt)
+        lv(time, dt)
+        nn(time, dt)
+        control(time, dt)
+        find_trains
+        set_passing_train(train, time)
+
+class <Terminus(Station)>: @def_station
+
+class <Balise>: @def_environment
+    |Attribute|:
+        name  # <string>
+        position  # <Position>
+        time_at_balise  # list <float>
+        train_at_balise  # list <float>
+        arriving_train  # <Train>
+        x0_train  # <float>
+        x1_train  # <float>
+        info  # <bool>
+
+    |Method|:
+        __init__
+        pass_on_balise
+        add_arriving_train
+        find_arriving_train
+        update_balise
+        check_train_balise
+
+class <Environment>: @def_environment
+    |Attribute|:
+        name  # <string>
+        tracks  # <Track>
+        nodes  # <Node>
+        equipements  # <Balise> 'or to be added'
+        nb_lines  # <int>
+        lines  # list <Line>
+        trains  # list <Train>
+
+    |Method|:
+        __init__
+
+class <FonctionError(Exception)>: @def_error
+
+class <StateError(Exception)>: @def_error
+
+class <>: @def_
+    |Attribute|:
+          # <>
+
+    |Method|:
+        __init__
